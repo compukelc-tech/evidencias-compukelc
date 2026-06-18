@@ -69,7 +69,7 @@ btnEnviar.addEventListener('click', function() {
     })
     .catch(error => {
         statusMessage.style.color = "red";
-        statusMessage.textContent = "❌ Error de conexión.";
+        statusMessage.textContent = "❌ Error: " + data.message;
         btnEnviar.disabled = false;
     });
 });
