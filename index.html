@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evidencias compukelc</title>
+    
+    <!-- NUEVO: Enlace al manifiesto para el ícono y la instalación -->
+    <link rel="manifest" href="manifest.json">
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -23,7 +27,6 @@
             <option value="Privado">Privado (Solo administración)</option>
         </select>
 
-        <!-- Aquí está la magia que fuerza a usar la cámara trasera -->
         <div class="camera-btn-wrapper">
             <label for="foto" class="camera-btn">📸 Tocar para tomar foto</label>
             <input type="file" id="foto" accept="image/*" capture="environment" style="display: none;">
@@ -34,6 +37,16 @@
         <p id="status-message"></p>
     </div>
 
+    <!-- El puente visual-backend que ya teníamos -->
     <script src="app.js"></script>
+
+    <!-- NUEVO: El "motor" de la PWA que habilita el botón de Instalar en el celular -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js');
+        });
+      }
+    </script>
 </body>
 </html>
