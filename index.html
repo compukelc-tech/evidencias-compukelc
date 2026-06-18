@@ -1,1 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evidencias compukelc</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Subir Evidencia</h2>
+        
+        <label for="usuario">¿Quién reporta?</label>
+        <select id="usuario">
+            <option value="">Selecciona tu nombre...</option>
+            <option value="Contratista 1">Contratista 1</option>
+            <option value="Contratista 2">Contratista 2</option>
+        </select>
 
+        <label for="privacidad">Nivel de privacidad:</label>
+        <select id="privacidad">
+            <option value="Público">Público (Visible para todos)</option>
+            <option value="Privado">Privado (Solo administración)</option>
+        </select>
+
+        <!-- Aquí está la magia que fuerza a usar la cámara trasera -->
+        <div class="camera-btn-wrapper">
+            <label for="foto" class="camera-btn">📸 Tocar para tomar foto</label>
+            <input type="file" id="foto" accept="image/*" capture="environment" style="display: none;">
+        </div>
+        <p id="file-name">Ninguna foto tomada aún.</p>
+
+        <button id="btn-enviar" class="submit-btn" disabled>Subir Evidencia</button>
+        <p id="status-message"></p>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
