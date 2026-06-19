@@ -1,4 +1,4 @@
-const SCRIPT_URL = "TU_NUEVA_URL_DE_GOOGLE_AQUI"; 
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0jPqKuGc19y45i0iwKGw1O3AzhiohNRDielALiQ62Os3NIZXztVz7g87dhmT_JIT6/exec"; 
 
 const loginSection = document.getElementById('login-section');
 const registerSection = document.getElementById('register-section');
