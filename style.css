@@ -31,6 +31,7 @@ h2 {
 }
 
 .input-field {
+    display: block;
     width: 100%;
     padding: 14px;
     margin-bottom: 15px;
@@ -48,9 +49,10 @@ h2 {
 }
 
 .submit-btn {
+    display: block;
     width: 100%;
     padding: 14px;
-    background-color: #007bff;
+    background-color: #28a745;
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -58,10 +60,11 @@ h2 {
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
+    margin-top: 10px;
 }
 
 .submit-btn:hover {
-    background-color: #0056b3;
+    background-color: #218838;
 }
 
 .submit-btn:disabled {
