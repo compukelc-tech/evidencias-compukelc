@@ -106,6 +106,10 @@ document.getElementById('btn-logout').addEventListener('click', () => {
     currentUserNombre = "";
     appSection.style.display = 'none';
     loginSection.style.display = 'block';
+    
+    // Limpiar historial al cerrar sesión
+    document.getElementById('galeria-contenedor').style.display = 'none';
+    document.getElementById('galeria-grid').innerHTML = '';
 });
 
 const fileInput = document.getElementById('foto');
@@ -125,7 +129,6 @@ fileInput.addEventListener('change', (event) => {
 
 submitBtn.addEventListener('click', () => {
     if (!selectedFile) return;
-    const privacidad = document.getElementById('privacidad').value;
     
     submitBtn.disabled = true;
     statusMessage.textContent = "Procesando y comprimiendo imagen...";
@@ -133,7 +136,6 @@ submitBtn.addEventListener('click', () => {
     const reader = new FileReader();
 
     reader.onload = function(e) {
-        // INYECCIÓN: Lógica de compresión mediante Canvas
         const img = new Image();
         img.onload = function() {
             const canvas = document.createElement('canvas');
@@ -142,7 +144,6 @@ submitBtn.addEventListener('click', () => {
             let width = img.width;
             let height = img.height;
 
-            // Mantener la relación de aspecto
             if (width > height) {
                 if (width > MAX_WIDTH) {
                     height *= MAX_WIDTH / width;
@@ -160,16 +161,14 @@ submitBtn.addEventListener('click', () => {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
 
-            // Convertir a JPEG comprimido (70% de calidad)
             const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
 
             statusMessage.textContent = "Subiendo archivo...";
             const payload = {
                 action: 'upload',
                 usuario: currentUserNombre,
-                privacidad: privacidad,
                 filename: selectedFile.name,
-                mimeType: 'image/jpeg', // Forzamos JPEG por la compresión
+                mimeType: 'image/jpeg',
                 base64: dataUrl
             };
 
@@ -181,6 +180,11 @@ submitBtn.addEventListener('click', () => {
                     selectedFile = null;
                     fileInput.value = "";
                     fileNameDisplay.textContent = "Ninguna foto tomada aún.";
+                    
+                    // Si la galería está abierta, refrescarla automáticamente
+                    if(document.getElementById('galeria-contenedor').style.display === 'block') {
+                        cargarHistorial();
+                    }
                 } else {
                     statusMessage.textContent = "❌ Error: " + data.message;
                 }
@@ -194,3 +198,49 @@ submitBtn.addEventListener('click', () => {
     };
     reader.readAsDataURL(selectedFile);
 });
+
+// Inyección: Lógica del Buscador de Evidencias
+document.getElementById('btn-ver-fotos').addEventListener('click', () => {
+    const contenedor = document.getElementById('galeria-contenedor');
+    if (contenedor.style.display === 'block') {
+        contenedor.style.display = 'none';
+    } else {
+        contenedor.style.display = 'block';
+        cargarHistorial();
+    }
+});
+
+function cargarHistorial() {
+    const grid = document.getElementById('galeria-grid');
+    grid.innerHTML = '<p style="font-size: 13px; color: #666;">Buscando evidencias en el servidor...</p>';
+    
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'get_evidences', usuario: currentUserNombre })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === 'success') {
+            grid.innerHTML = '';
+            if(data.evidencias.length === 0) {
+                grid.innerHTML = '<p style="font-size: 13px; color: #666;">Aún no has subido evidencias.</p>';
+                return;
+            }
+            
+            data.evidencias.forEach(ev => {
+                const card = document.createElement('div');
+                card.className = 'foto-card';
+                card.innerHTML = `
+                    <div class="foto-info">📅 ${ev.fecha}</div>
+                    <a href="${ev.url}" target="_blank" class="btn-descarga">↓ Descargar</a>
+                `;
+                grid.appendChild(card);
+            });
+        } else {
+            grid.innerHTML = '<p style="color: red;">Error al consultar datos.</p>';
+        }
+    })
+    .catch(() => {
+        grid.innerHTML = '<p style="color: red;">Error de red al consultar.</p>';
+    });
+}
