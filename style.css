@@ -130,3 +130,41 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
+/* Inyección: Estilos del Historial de Evidencias */
+.galeria-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.foto-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px;
+    background: #f8fafc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.foto-info {
+    font-size: 13px;
+    color: #475569;
+    font-weight: 600;
+}
+
+.btn-descarga {
+    background: #007bff;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.btn-descarga:hover {
+    background: #0056b3;
+    color: white;
+    text-decoration: none;
+}
