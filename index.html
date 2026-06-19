@@ -4,29 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evidencias compukelc</title>
-    
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         
-        <!-- PANTALLA DE INICIO DE SESIÓN -->
         <div id="login-section">
             <h2>Iniciar Sesión</h2>
             <input type="text" id="login-doc" class="input-field" placeholder="Documento o NIT" required>
             <input type="password" id="login-pass" class="input-field" placeholder="Contraseña" required>
             
-            <div class="checkbox-wrapper" style="text-align: left; margin: 15px 0;">
+            <div class="checkbox-wrapper">
                 <input type="checkbox" id="recordar-datos">
-                <label for="recordar-datos" style="display: inline; font-weight: normal; margin-left: 5px;">Guardar datos de acceso</label>
+                <label for="recordar-datos">Guardar datos de acceso</label>
             </div>
             
             <button id="btn-login" class="submit-btn">Ingresar</button>
             <p style="margin-top: 15px;">¿No tienes cuenta? <a href="#" id="link-registro" style="color: #007bff;">Regístrate aquí</a></p>
         </div>
 
-        <!-- PANTALLA DE REGISTRO -->
         <div id="register-section" style="display: none;">
             <h2>Registro de Contratista</h2>
             <input type="text" id="reg-nombre" class="input-field" placeholder="Nombre Completo" required>
@@ -39,7 +36,6 @@
             <p style="margin-top: 15px;">¿Ya tienes cuenta? <a href="#" id="link-login" style="color: #007bff;">Inicia sesión</a></p>
         </div>
 
-        <!-- PANTALLA PRINCIPAL (Oculta hasta que ingresen) -->
         <div id="app-section" style="display: none;">
             <h2>Subir Evidencia</h2>
             <p id="user-greeting" style="font-weight: bold; color: #333; margin-bottom: 15px;"></p>
