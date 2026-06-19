@@ -126,36 +126,71 @@ fileInput.addEventListener('change', (event) => {
 submitBtn.addEventListener('click', () => {
     if (!selectedFile) return;
     const privacidad = document.getElementById('privacidad').value;
+    
+    submitBtn.disabled = true;
+    statusMessage.textContent = "Procesando y comprimiendo imagen...";
+    
     const reader = new FileReader();
 
     reader.onload = function(e) {
-        submitBtn.disabled = true;
-        statusMessage.textContent = "Subiendo archivo...";
-        const payload = {
-            action: 'upload',
-            usuario: currentUserNombre,
-            privacidad: privacidad,
-            filename: selectedFile.name,
-            mimeType: selectedFile.type,
-            base64: e.target.result
-        };
+        // INYECCIÓN: Lógica de compresión mediante Canvas
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 1280;
+            const MAX_HEIGHT = 1280;
+            let width = img.width;
+            let height = img.height;
 
-        fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === "success") {
-                statusMessage.textContent = "✅ Evidencia subida exitosamente.";
-                selectedFile = null;
-                fileInput.value = "";
-                fileNameDisplay.textContent = "Ninguna foto tomada aún.";
+            // Mantener la relación de aspecto
+            if (width > height) {
+                if (width > MAX_WIDTH) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                }
             } else {
-                statusMessage.textContent = "❌ Error: " + data.message;
+                if (height > MAX_HEIGHT) {
+                    width *= MAX_HEIGHT / height;
+                    height = MAX_HEIGHT;
+                }
             }
-        })
-        .catch(() => {
-            statusMessage.textContent = "❌ Error de red.";
-        })
-        .finally(() => { submitBtn.disabled = false; });
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // Convertir a JPEG comprimido (70% de calidad)
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+
+            statusMessage.textContent = "Subiendo archivo...";
+            const payload = {
+                action: 'upload',
+                usuario: currentUserNombre,
+                privacidad: privacidad,
+                filename: selectedFile.name,
+                mimeType: 'image/jpeg', // Forzamos JPEG por la compresión
+                base64: dataUrl
+            };
+
+            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    statusMessage.textContent = "✅ Evidencia subida exitosamente.";
+                    selectedFile = null;
+                    fileInput.value = "";
+                    fileNameDisplay.textContent = "Ninguna foto tomada aún.";
+                } else {
+                    statusMessage.textContent = "❌ Error: " + data.message;
+                }
+            })
+            .catch(() => {
+                statusMessage.textContent = "❌ Error de red.";
+            })
+            .finally(() => { submitBtn.disabled = false; });
+        };
+        img.src = e.target.result;
     };
     reader.readAsDataURL(selectedFile);
 });
