@@ -5,42 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evidencias compukelc</title>
     
-    <!-- NUEVO: Enlace al manifiesto para el ícono y la instalación -->
     <link rel="manifest" href="manifest.json">
-    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h2>Subir Evidencia</h2>
         
-        <label for="usuario">¿Quién reporta?</label>
-        <select id="usuario">
-            <option value="">Selecciona tu nombre...</option>
-            <option value="Contratista 1">Contratista 1</option>
-            <option value="Contratista 2">Contratista 2</option>
-        </select>
-
-        <label for="privacidad">Nivel de privacidad:</label>
-        <select id="privacidad">
-            <option value="Público">Público (Visible para todos)</option>
-            <option value="Privado">Privado (Solo administración)</option>
-        </select>
-
-        <div class="camera-btn-wrapper">
-            <label for="foto" class="camera-btn">📸 Tocar para tomar foto</label>
-            <input type="file" id="foto" accept="image/*" capture="environment" style="display: none;">
+        <!-- PANTALLA DE INICIO DE SESIÓN -->
+        <div id="login-section">
+            <h2>Iniciar Sesión</h2>
+            <input type="text" id="login-doc" class="input-field" placeholder="Documento o NIT" required>
+            <input type="password" id="login-pass" class="input-field" placeholder="Contraseña" required>
+            
+            <div class="checkbox-wrapper" style="text-align: left; margin: 15px 0;">
+                <input type="checkbox" id="recordar-datos">
+                <label for="recordar-datos" style="display: inline; font-weight: normal; margin-left: 5px;">Guardar datos de acceso</label>
+            </div>
+            
+            <button id="btn-login" class="submit-btn">Ingresar</button>
+            <p style="margin-top: 15px;">¿No tienes cuenta? <a href="#" id="link-registro" style="color: #007bff;">Regístrate aquí</a></p>
         </div>
-        <p id="file-name">Ninguna foto tomada aún.</p>
 
-        <button id="btn-enviar" class="submit-btn" disabled>Subir Evidencia</button>
-        <p id="status-message"></p>
+        <!-- PANTALLA DE REGISTRO -->
+        <div id="register-section" style="display: none;">
+            <h2>Registro de Contratista</h2>
+            <input type="text" id="reg-nombre" class="input-field" placeholder="Nombre Completo" required>
+            <input type="email" id="reg-correo" class="input-field" placeholder="Correo Electrónico" required>
+            <input type="text" id="reg-doc" class="input-field" placeholder="Documento de Identidad o NIT" required>
+            <input type="tel" id="reg-celular" class="input-field" placeholder="Número Celular" required>
+            <input type="password" id="reg-pass" class="input-field" placeholder="Crear Contraseña" required>
+            
+            <button id="btn-registrar" class="submit-btn" style="background-color: #28a745;">Enviar Registro</button>
+            <p style="margin-top: 15px;">¿Ya tienes cuenta? <a href="#" id="link-login" style="color: #007bff;">Inicia sesión</a></p>
+        </div>
+
+        <!-- PANTALLA PRINCIPAL (Oculta hasta que ingresen) -->
+        <div id="app-section" style="display: none;">
+            <h2>Subir Evidencia</h2>
+            <p id="user-greeting" style="font-weight: bold; color: #333; margin-bottom: 15px;"></p>
+            
+            <label for="privacidad">Nivel de privacidad:</label>
+            <select id="privacidad" class="input-field">
+                <option value="Público">Público (Visible para todos)</option>
+                <option value="Privado">Privado (Solo administración)</option>
+            </select>
+
+            <div class="camera-btn-wrapper">
+                <label for="foto" class="camera-btn">📸 Tocar para tomar foto</label>
+                <input type="file" id="foto" accept="image/*" capture="environment" style="display: none;">
+            </div>
+            <p id="file-name">Ninguna foto tomada aún.</p>
+
+            <button id="btn-enviar" class="submit-btn" disabled>Subir Evidencia</button>
+            <button id="btn-logout" class="submit-btn" style="margin-top: 15px; background-color: #dc3545;">Cerrar Sesión</button>
+            <p id="status-message"></p>
+        </div>
+
     </div>
 
-    <!-- El puente visual-backend que ya teníamos -->
     <script src="app.js"></script>
-
-    <!-- NUEVO: El "motor" de la PWA que habilita el botón de Instalar en el celular -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
