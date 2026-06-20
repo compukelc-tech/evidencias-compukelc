@@ -4,7 +4,7 @@
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-
+ 
 body {
     background-color: #f4f7f6;
     display: flex;
@@ -13,7 +13,7 @@ body {
     min-height: 100vh;
     padding: 20px;
 }
-
+ 
 .container {
     background-color: #ffffff;
     padding: 30px;
@@ -23,13 +23,13 @@ body {
     max-width: 400px;
     text-align: center;
 }
-
+ 
 h2 {
     color: #333;
     margin-bottom: 20px;
     font-size: 24px;
 }
-
+ 
 .input-field {
     display: block;
     width: 100%;
@@ -41,13 +41,13 @@ h2 {
     transition: border-color 0.3s;
     background-color: #fafafa;
 }
-
+ 
 .input-field:focus {
     border-color: #007bff;
     outline: none;
     background-color: #ffffff;
 }
-
+ 
 .submit-btn {
     display: block;
     width: 100%;
@@ -62,33 +62,33 @@ h2 {
     transition: background-color 0.3s;
     margin-top: 10px;
 }
-
+ 
 .submit-btn:hover {
     background-color: #218838;
 }
-
+ 
 .submit-btn:disabled {
     background-color: #999;
     cursor: not-allowed;
 }
-
+ 
 .checkbox-wrapper {
     display: flex;
     align-items: center;
     margin: 15px 0 20px 0;
     text-align: left;
 }
-
+ 
 .checkbox-wrapper input[type="checkbox"] {
     margin-right: 10px;
     width: 18px;
     height: 18px;
 }
-
+ 
 .camera-btn-wrapper {
     margin: 20px 0;
 }
-
+ 
 .camera-btn {
     display: inline-block;
     padding: 15px 20px;
@@ -101,43 +101,43 @@ h2 {
     text-align: center;
     font-weight: bold;
 }
-
+ 
 .camera-btn:hover {
     background-color: #5a6268;
 }
-
+ 
 #file-name {
     margin-bottom: 15px;
     font-size: 14px;
     color: #555;
     word-break: break-all;
 }
-
+ 
 select.input-field {
     appearance: none;
     cursor: pointer;
 }
-
+ 
 p {
     color: #666;
 }
-
+ 
 a {
     text-decoration: none;
     font-weight: bold;
 }
-
+ 
 a:hover {
     text-decoration: underline;
 }
-
-/* Inyección: Estilos del Historial y Miniaturas */
+ 
+/* Estilos del Historial y Miniaturas */
 .galeria-grid {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
-
+ 
 .foto-card {
     border: 1px solid #e2e8f0;
     border-radius: 8px;
@@ -148,7 +148,7 @@ a:hover {
     align-items: center;
     gap: 12px;
 }
-
+ 
 .foto-thumbnail {
     width: 45px;
     height: 45px;
@@ -157,7 +157,7 @@ a:hover {
     border: 1px solid #cbd5e1;
     background-color: #e2e8f0;
 }
-
+ 
 .foto-info {
     font-size: 13px;
     color: #475569;
@@ -165,7 +165,7 @@ a:hover {
     flex-grow: 1;
     text-align: left;
 }
-
+ 
 .btn-descarga {
     background: #007bff;
     color: white;
@@ -175,7 +175,7 @@ a:hover {
     font-weight: bold;
     text-align: center;
 }
-
+ 
 .btn-descarga:hover {
     background: #0056b3;
     color: white;
