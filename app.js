@@ -1,40 +1,59 @@
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0jPqKuGc19y45i0iwKGw1O3AzhiohNRDielALiQ62Os3NIZXztVz7g87dhmT_JIT6/exec";
- 
+
 const loginSection = document.getElementById('login-section');
 const registerSection = document.getElementById('register-section');
 const appSection = document.getElementById('app-section');
 const adminSection = document.getElementById('admin-section');
- 
+
 document.getElementById('link-registro').addEventListener('click', (e) => {
-   e.preventDefault();
-   loginSection.style.display = 'none';
-   registerSection.style.display = 'block';
+    e.preventDefault();
+    loginSection.style.display = 'none';
+    registerSection.style.display = 'block';
 });
- 
+
 document.getElementById('link-login').addEventListener('click', (e) => {
-   e.preventDefault();
-   registerSection.style.display = 'none';
-   loginSection.style.display = 'block';
+    e.preventDefault();
+    registerSection.style.display = 'none';
+    loginSection.style.display = 'block';
 });
- 
+
 let currentUserNombre = "";
- 
+
+// Inicializar el filtro de año dinámico
+function inicializarFiltrosAnio() {
+    const selectAnio = document.getElementById('filtro-anio');
+    if (!selectAnio) return;
+    
+    const anioInicio = 2026;
+    const anioActual = new Date().getFullYear();
+    const maxAnio = Math.max(anioInicio, anioActual);
+    
+    selectAnio.innerHTML = '';
+    for (let anio = anioInicio; anio <= maxAnio; anio++) {
+        const option = document.createElement('option');
+        option.value = anio;
+        option.textContent = anio;
+        selectAnio.appendChild(option);
+    }
+    selectAnio.value = maxAnio; // Dejar por defecto el año actual
+}
+
 document.getElementById('btn-registrar').addEventListener('click', async () => {
     const nombre = document.getElementById('reg-nombre').value;
     const correo = document.getElementById('reg-correo').value;
     const doc = document.getElementById('reg-doc').value;
     const celular = document.getElementById('reg-celular').value;
     const pass = document.getElementById('reg-pass').value;
- 
+
     if (!nombre || !correo || !doc || !celular || !pass) {
         alert("Por favor completa todos los campos.");
         return;
     }
- 
+
     const btn = document.getElementById('btn-registrar');
     btn.innerText = "Enviando datos...";
     btn.disabled = true;
- 
+
     try {
         const response = await fetch(SCRIPT_URL, {
             method: 'POST',
@@ -53,7 +72,7 @@ document.getElementById('btn-registrar').addEventListener('click', async () => {
         btn.disabled = false;
     }
 });
- 
+
 async function doLogin(doc, pass, recordar) {
     try {
         const response = await fetch(SCRIPT_URL, {
@@ -61,7 +80,7 @@ async function doLogin(doc, pass, recordar) {
             body: JSON.stringify({ action: 'login', doc, pass })
         });
         const result = await response.json();
-         
+        
         if (result.status === "success") {
             currentUserNombre = result.nombre; 
             if (recordar) {
@@ -86,30 +105,31 @@ async function doLogin(doc, pass, recordar) {
             localStorage.removeItem('compukelc_pass');
         }
     } catch (error) {
-         alert("Error de conexión al iniciar sesión.");
+        alert("Error de conexión al iniciar sesión.");
     }
 }
- 
+
 document.getElementById('btn-login').addEventListener('click', () => {
     const doc = document.getElementById('login-doc').value;
     const pass = document.getElementById('login-pass').value;
     const recordar = document.getElementById('recordar-datos').checked;
-     
+    
     if (!doc || !pass) {
         alert("Ingresa tu documento y contraseña.");
         return;
     }
     doLogin(doc, pass, recordar);
 });
- 
+
 window.addEventListener('DOMContentLoaded', () => {
+    inicializarFiltrosAnio();
     const savedDoc = localStorage.getItem('compukelc_doc');
     const savedPass = localStorage.getItem('compukelc_pass');
     if (savedDoc && savedPass) {
         doLogin(savedDoc, savedPass, true);
     }
 });
- 
+
 document.getElementById('btn-logout').addEventListener('click', () => {
     localStorage.removeItem('compukelc_doc');
     localStorage.removeItem('compukelc_pass');
@@ -117,26 +137,26 @@ document.getElementById('btn-logout').addEventListener('click', () => {
     appSection.style.display = 'none';
     adminSection.style.display = 'none';
     loginSection.style.display = 'block';
-     
+    
     document.getElementById('galeria-contenedor').style.display = 'none';
     document.getElementById('galeria-grid').innerHTML = '';
     document.getElementById('preview-container').style.display = 'none';
     document.getElementById('image-preview').src = '';
 });
- 
+
 const fileInput = document.getElementById('foto');
 const fileNameDisplay = document.getElementById('file-name');
 const submitBtn = document.getElementById('btn-enviar');
 const statusMessage = document.getElementById('status-message');
 let selectedFile = null;
- 
+
 fileInput.addEventListener('change', (event) => {
     const file = event.target.files[0];
     if (file) {
         selectedFile = file;
         fileNameDisplay.textContent = `Foto lista: ${file.name}`;
         submitBtn.disabled = false;
-         
+        
         const reader = new FileReader();
         reader.onload = function(e) {
             document.getElementById('image-preview').src = e.target.result;
@@ -145,13 +165,13 @@ fileInput.addEventListener('change', (event) => {
         reader.readAsDataURL(file);
     }
 });
- 
+
 submitBtn.addEventListener('click', () => {
     if (!selectedFile) return;
-     
+    
     submitBtn.disabled = true;
     statusMessage.textContent = "Procesando y comprimiendo imagen...";
-     
+    
     const reader = new FileReader();
     reader.onload = function(e) {
         const img = new Image();
@@ -161,7 +181,7 @@ submitBtn.addEventListener('click', () => {
             const MAX_HEIGHT = 1280;
             let width = img.width;
             let height = img.height;
- 
+
             if (width > height) {
                 if (width > MAX_WIDTH) {
                     height *= MAX_WIDTH / width;
@@ -173,12 +193,12 @@ submitBtn.addEventListener('click', () => {
                     height = MAX_HEIGHT;
                 }
             }
- 
+
             canvas.width = width;
             canvas.height = height;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
- 
+
             const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
             statusMessage.textContent = "Subiendo archivo...";
             const payload = {
@@ -188,7 +208,7 @@ submitBtn.addEventListener('click', () => {
                 mimeType: 'image/jpeg',
                 base64: dataUrl
             };
- 
+
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
             .then(response => response.json())
             .then(data => {
@@ -197,10 +217,10 @@ submitBtn.addEventListener('click', () => {
                     selectedFile = null;
                     fileInput.value = "";
                     fileNameDisplay.textContent = "Ninguna foto tomada aún.";
-                     
+                    
                     document.getElementById('preview-container').style.display = 'none';
                     document.getElementById('image-preview').src = '';
-                     
+                    
                     if(document.getElementById('galeria-contenedor').style.display === 'block') {
                         cargarHistorial();
                     }
@@ -217,7 +237,7 @@ submitBtn.addEventListener('click', () => {
     };
     reader.readAsDataURL(selectedFile);
 });
- 
+
 document.getElementById('btn-ver-fotos').addEventListener('click', () => {
     const contenedor = document.getElementById('galeria-contenedor');
     if (contenedor.style.display === 'block') {
@@ -227,11 +247,11 @@ document.getElementById('btn-ver-fotos').addEventListener('click', () => {
         cargarHistorial();
     }
 });
- 
+
 function cargarHistorial() {
     const grid = document.getElementById('galeria-grid');
     grid.innerHTML = '<p style="font-size: 13px; color: #666;">Buscando evidencias en el servidor...</p>';
-     
+    
     fetch(SCRIPT_URL, {
         method: 'POST',
         body: JSON.stringify({ action: 'get_evidences', usuario: currentUserNombre })
@@ -244,14 +264,35 @@ function cargarHistorial() {
                 grid.innerHTML = '<p style="font-size: 13px; color: #666;">Aún no has subido evidencias.</p>';
                 return;
             }
-             
+            
             data.evidencias.forEach(ev => {
+                // Parseo de fecha para extraer Año y Mes
+                let anioFoto = "";
+                let mesFoto = "";
+                let dateObj = new Date(ev.fecha);
+                
+                if (!isNaN(dateObj.getTime())) {
+                    anioFoto = dateObj.getFullYear().toString();
+                    mesFoto = (dateObj.getMonth() + 1).toString();
+                } else {
+                    // Respaldo por si el formato viene como DD/MM/YYYY
+                    const partes = ev.fecha.split('/');
+                    if(partes.length >= 3) {
+                        anioFoto = partes[2].substring(0,4);
+                        mesFoto = parseInt(partes[1], 10).toString();
+                    }
+                }
+
                 const match = ev.url.match(/\/d\/(.+?)\//);
                 const thumbUrl = match ? `https://drive.google.com/thumbnail?id=${match[1]}&sz=w100` : '';
                 const thumbHtml = thumbUrl ? `<img src="${thumbUrl}" class="foto-thumbnail" alt="Evidencia">` : '<div class="foto-thumbnail"></div>';
-                 
+                
                 const card = document.createElement('div');
                 card.className = 'foto-card';
+                // Añadimos los atributos de datos para el filtrado
+                card.setAttribute('data-anio', anioFoto);
+                card.setAttribute('data-mes', mesFoto);
+                
                 card.innerHTML = `
                     ${thumbHtml}
                     <div class="foto-info">📅 ${ev.fecha}</div>
@@ -259,6 +300,10 @@ function cargarHistorial() {
                 `;
                 grid.appendChild(card);
             });
+            
+            // Aplicar el filtro inmediatamente después de cargar
+            filtrarFotos();
+            
         } else {
             grid.innerHTML = '<p style="color: red;">Error al consultar datos.</p>';
         }
@@ -267,9 +312,31 @@ function cargarHistorial() {
         grid.innerHTML = '<p style="color: red;">Error de red al consultar.</p>';
     });
 }
- 
+
+// Función global de filtrado
+window.filtrarFotos = function() {
+    const anioSeleccionado = document.getElementById('filtro-anio').value;
+    const mesSeleccionado = document.getElementById('filtro-mes').value;
+    const fotos = document.querySelectorAll('#galeria-grid .foto-card');
+
+    fotos.forEach(foto => {
+        const anioFoto = foto.getAttribute('data-anio');
+        const mesFoto = foto.getAttribute('data-mes');
+
+        // Si por alguna razón la fecha no se pudo procesar, por seguridad la mostramos para que el contratista no piense que se borró
+        const coincideAnio = (anioSeleccionado === anioFoto) || (!anioFoto);
+        const coincideMes = (mesSeleccionado === 'todos' || mesSeleccionado === mesFoto) || (!mesFoto);
+
+        if (coincideAnio && coincideMes) {
+            foto.style.display = 'flex'; // Utilizamos flex porque así está estructurada la foto-card
+        } else {
+            foto.style.display = 'none';
+        }
+    });
+};
+
 document.getElementById('btn-load-users').addEventListener('click', loadAdminUsers);
- 
+
 function loadAdminUsers() {
     const listContainer = document.getElementById('admin-users-list');
     listContainer.innerHTML = '<p style="text-align: center; color: #666;">Cargando base de datos...</p>';
@@ -315,7 +382,7 @@ function loadAdminUsers() {
         listContainer.innerHTML = '<p style="color: red; text-align: center;">Error de red al consultar.</p>';
     });
 }
- 
+
 window.manageUser = function(row, actionType) {
     if (actionType === 'delete') {
         if (!confirm("⚠️ ¿Estás seguro de eliminar este usuario por completo? Esta acción eliminará su fila en la hoja de cálculo de forma irreversible.")) return;
