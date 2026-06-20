@@ -131,7 +131,7 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Inyección: Estilos del Historial de Evidencias */
+/* Inyección: Estilos del Historial y Miniaturas */
 .galeria-grid {
     display: flex;
     flex-direction: column;
@@ -141,17 +141,29 @@ a:hover {
 .foto-card {
     border: 1px solid #e2e8f0;
     border-radius: 8px;
-    padding: 12px;
+    padding: 10px;
     background: #f8fafc;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 12px;
+}
+
+.foto-thumbnail {
+    width: 45px;
+    height: 45px;
+    border-radius: 6px;
+    object-fit: cover;
+    border: 1px solid #cbd5e1;
+    background-color: #e2e8f0;
 }
 
 .foto-info {
     font-size: 13px;
     color: #475569;
     font-weight: 600;
+    flex-grow: 1;
+    text-align: left;
 }
 
 .btn-descarga {
@@ -161,6 +173,7 @@ a:hover {
     border-radius: 5px;
     font-size: 12px;
     font-weight: bold;
+    text-align: center;
 }
 
 .btn-descarga:hover {
