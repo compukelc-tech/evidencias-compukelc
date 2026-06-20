@@ -107,9 +107,11 @@ document.getElementById('btn-logout').addEventListener('click', () => {
     appSection.style.display = 'none';
     loginSection.style.display = 'block';
     
-    // Limpiar historial al cerrar sesión
+    // Limpiar historial e imagen al cerrar sesión
     document.getElementById('galeria-contenedor').style.display = 'none';
     document.getElementById('galeria-grid').innerHTML = '';
+    document.getElementById('preview-container').style.display = 'none';
+    document.getElementById('image-preview').src = '';
 });
 
 const fileInput = document.getElementById('foto');
@@ -118,12 +120,21 @@ const submitBtn = document.getElementById('btn-enviar');
 const statusMessage = document.getElementById('status-message');
 let selectedFile = null;
 
+// Inyección: Renderizar Vista Previa Local
 fileInput.addEventListener('change', (event) => {
     const file = event.target.files[0];
     if (file) {
         selectedFile = file;
         fileNameDisplay.textContent = `Foto lista: ${file.name}`;
         submitBtn.disabled = false;
+        
+        // Motor de vista previa
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('image-preview').src = e.target.result;
+            document.getElementById('preview-container').style.display = 'block';
+        }
+        reader.readAsDataURL(file);
     }
 });
 
@@ -181,7 +192,10 @@ submitBtn.addEventListener('click', () => {
                     fileInput.value = "";
                     fileNameDisplay.textContent = "Ninguna foto tomada aún.";
                     
-                    // Si la galería está abierta, refrescarla automáticamente
+                    // Inyección: Ocultar vista previa tras éxito
+                    document.getElementById('preview-container').style.display = 'none';
+                    document.getElementById('image-preview').src = '';
+                    
                     if(document.getElementById('galeria-contenedor').style.display === 'block') {
                         cargarHistorial();
                     }
@@ -210,6 +224,7 @@ document.getElementById('btn-ver-fotos').addEventListener('click', () => {
     }
 });
 
+// Inyección: Motor de Miniaturas desde Drive
 function cargarHistorial() {
     const grid = document.getElementById('galeria-grid');
     grid.innerHTML = '<p style="font-size: 13px; color: #666;">Buscando evidencias en el servidor...</p>';
@@ -228,9 +243,16 @@ function cargarHistorial() {
             }
             
             data.evidencias.forEach(ev => {
+                // Extractor inteligente del ID de Drive
+                const match = ev.url.match(/\/d\/(.+?)\//);
+                const thumbUrl = match ? `https://drive.google.com/thumbnail?id=${match[1]}&sz=w100` : '';
+                
+                const thumbHtml = thumbUrl ? `<img src="${thumbUrl}" class="foto-thumbnail" alt="Evidencia">` : '<div class="foto-thumbnail"></div>';
+
                 const card = document.createElement('div');
                 card.className = 'foto-card';
                 card.innerHTML = `
+                    ${thumbHtml}
                     <div class="foto-info">📅 ${ev.fecha}</div>
                     <a href="${ev.url}" target="_blank" class="btn-descarga">↓ Descargar</a>
                 `;
