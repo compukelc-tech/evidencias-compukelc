@@ -23,7 +23,7 @@
             <button id="btn-login" class="submit-btn">Ingresar</button>
             <p style="margin-top: 15px;">¿No tienes cuenta? <a href="#" id="link-registro" style="color: #007bff;">Regístrate aquí</a></p>
         </div>
- 
+
         <div id="register-section" style="display: none;">
             <h2>Registro de Contratista</h2>
             <input type="text" id="reg-nombre" class="input-field" placeholder="Nombre Completo" required>
@@ -35,11 +35,11 @@
             <button id="btn-registrar" class="submit-btn" style="background-color: #28a745;">Enviar Registro</button>
             <p style="margin-top: 15px;">¿Ya tienes cuenta? <a href="#" id="link-login" style="color: #007bff;">Inicia sesión</a></p>
         </div>
- 
+
         <div id="app-section" style="display: none;">
             <h2>Subir Evidencia</h2>
             <p id="user-greeting" style="font-weight: bold; color: #333; margin-bottom: 15px;"></p>
- 
+
             <div class="camera-btn-wrapper">
                 <label for="foto" class="camera-btn">📸 Tocar para tomar foto</label>
                 <input type="file" id="foto" accept="image/*" capture="environment" style="display: none;">
@@ -48,9 +48,9 @@
             <div id="preview-container" style="display: none; margin-bottom: 15px;">
                 <img id="image-preview" alt="Vista previa de la evidencia" style="max-width: 100%; max-height: 250px; border-radius: 8px; border: 1px solid #ccc; object-fit: contain; background-color: #f8fafc;" />
             </div>
- 
+
             <p id="file-name">Ninguna foto tomada aún.</p>
- 
+
             <button id="btn-enviar" class="submit-btn" disabled>Subir Evidencia</button>
             <p id="status-message"></p>
             
@@ -60,6 +60,35 @@
             
             <div id="galeria-contenedor" style="display: none; margin-top: 15px; text-align: left;">
                 <h3 style="font-size: 16px; margin-bottom: 10px; color: #333;">Historial de Cargas</h3>
+                
+                <!-- Filtros Dinámicos -->
+                <div class="filtros-evidencia">
+                    <div class="filtro-grupo">
+                        <label for="filtro-anio">Año:</label>
+                        <select id="filtro-anio" onchange="filtrarFotos()">
+                            <!-- Las opciones se inyectan dinámicamente vía JavaScript desde 2026 -->
+                        </select>
+                    </div>
+                    <div class="filtro-grupo">
+                        <label for="filtro-mes">Mes:</label>
+                        <select id="filtro-mes" onchange="filtrarFotos()">
+                            <option value="todos">Todos</option>
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div id="galeria-grid" class="galeria-grid"></div>
             </div>
 
@@ -67,14 +96,14 @@
                 <h2 style="color: #17a2b8;">Panel Súper Admin</h2>
                 <button id="btn-load-users" class="submit-btn" style="background-color: #17a2b8; margin-bottom: 15px;">Cargar Lista Contratistas</button>
                 <div id="admin-users-list" style="text-align: left; margin-top: 10px;">
-                    </div>
+                </div>
             </div>
- 
+
             <button id="btn-logout" class="submit-btn" style="margin-top: 25px; background-color: #dc3545;">Cerrar Sesión</button>
         </div>
- 
+
     </div>
- 
+
     <script src="app.js"></script>
     <script>
       if ('serviceWorker' in navigator) {
