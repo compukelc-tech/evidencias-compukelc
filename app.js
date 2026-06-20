@@ -70,13 +70,15 @@ async function doLogin(doc, pass, recordar) {
             }
             
             loginSection.style.display = 'none';
-
+            appSection.style.display = 'block';
+            
             if (result.rol === "admin") {
+                document.getElementById('user-greeting').innerText = `👤 Admin: ${currentUserNombre}`;
                 adminSection.style.display = 'block';
                 loadAdminUsers();
             } else {
                 document.getElementById('user-greeting').innerText = `👤 Contratista: ${currentUserNombre}`;
-                appSection.style.display = 'block';
+                adminSection.style.display = 'none';
             }
         } else {
             alert(result.message);
@@ -113,20 +115,13 @@ document.getElementById('btn-logout').addEventListener('click', () => {
     localStorage.removeItem('compukelc_pass');
     currentUserNombre = "";
     appSection.style.display = 'none';
+    adminSection.style.display = 'none';
     loginSection.style.display = 'block';
      
     document.getElementById('galeria-contenedor').style.display = 'none';
     document.getElementById('galeria-grid').innerHTML = '';
     document.getElementById('preview-container').style.display = 'none';
     document.getElementById('image-preview').src = '';
-});
-
-document.getElementById('btn-logout-admin').addEventListener('click', () => {
-    localStorage.removeItem('compukelc_doc');
-    localStorage.removeItem('compukelc_pass');
-    currentUserNombre = "";
-    adminSection.style.display = 'none';
-    loginSection.style.display = 'block';
 });
  
 const fileInput = document.getElementById('foto');
@@ -272,9 +267,9 @@ function cargarHistorial() {
         grid.innerHTML = '<p style="color: red;">Error de red al consultar.</p>';
     });
 }
-
+ 
 document.getElementById('btn-load-users').addEventListener('click', loadAdminUsers);
-
+ 
 function loadAdminUsers() {
     const listContainer = document.getElementById('admin-users-list');
     listContainer.innerHTML = '<p style="text-align: center; color: #666;">Cargando base de datos...</p>';
@@ -320,7 +315,7 @@ function loadAdminUsers() {
         listContainer.innerHTML = '<p style="color: red; text-align: center;">Error de red al consultar.</p>';
     });
 }
-
+ 
 window.manageUser = function(row, actionType) {
     if (actionType === 'delete') {
         if (!confirm("⚠️ ¿Estás seguro de eliminar este usuario por completo? Esta acción eliminará su fila en la hoja de cálculo de forma irreversible.")) return;
