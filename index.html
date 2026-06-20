@@ -3,31 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evidencias compukelc</title>
+   <title>Evidencias compukelc</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         
-        <!-- SECCIÓN DE LOGIN -->
         <div id="login-section">
-            <h2>Iniciar Sesión</h2>
+           <h2>Iniciar Sesión</h2>
             <input type="text" id="login-doc" class="input-field" placeholder="Documento o NIT" required>
             <input type="password" id="login-pass" class="input-field" placeholder="Contraseña" required>
             
             <div class="checkbox-wrapper">
-                <input type="checkbox" id="recordar-datos">
-                <label for="recordar-datos">Guardar datos de acceso</label>
-            </div>
+               <input type="checkbox" id="recordar-datos">
+               <label for="recordar-datos">Guardar datos de acceso</label>
+           </div>
             
             <button id="btn-login" class="submit-btn">Ingresar</button>
             <p style="margin-top: 15px;">¿No tienes cuenta? <a href="#" id="link-registro" style="color: #007bff;">Regístrate aquí</a></p>
         </div>
-
-        <!-- SECCIÓN DE REGISTRO -->
+ 
         <div id="register-section" style="display: none;">
-            <h2>Registro de Contratista</h2>
+           <h2>Registro de Contratista</h2>
             <input type="text" id="reg-nombre" class="input-field" placeholder="Nombre Completo" required>
             <input type="email" id="reg-correo" class="input-field" placeholder="Correo Electrónico" required>
             <input type="text" id="reg-doc" class="input-field" placeholder="Documento de Identidad o NIT" required>
@@ -37,24 +35,22 @@
             <button id="btn-registrar" class="submit-btn" style="background-color: #28a745;">Enviar Registro</button>
             <p style="margin-top: 15px;">¿Ya tienes cuenta? <a href="#" id="link-login" style="color: #007bff;">Inicia sesión</a></p>
         </div>
-
-        <!-- SECCIÓN DE LA APLICACIÓN -->
+ 
         <div id="app-section" style="display: none;">
-            <h2>Subir Evidencia</h2>
+           <h2>Subir Evidencia</h2>
             <p id="user-greeting" style="font-weight: bold; color: #333; margin-bottom: 15px;"></p>
-
+ 
             <div class="camera-btn-wrapper">
-                <label for="foto" class="camera-btn">📸 Tocar para tomar foto</label>
-                <input type="file" id="foto" accept="image/*" capture="environment" style="display: none;">
-            </div>
+               <label for="foto" class="camera-btn">📸 Tocar para tomar foto</label>
+               <input type="file" id="foto" accept="image/*" capture="environment" style="display: none;">
+           </div>
             
-            <!-- INYECCIÓN: Contenedor de Vista Previa -->
             <div id="preview-container" style="display: none; margin-bottom: 15px;">
-                <img id="image-preview" alt="Vista previa de la evidencia" style="max-width: 100%; max-height: 250px; border-radius: 8px; border: 1px solid #ccc; object-fit: contain; background-color: #f8fafc;" />
-            </div>
-
-            <p id="file-name">Ninguna foto tomada aún.</p>
-
+               <img id="image-preview" alt="Vista previa de la evidencia" style="max-width: 100%; max-height: 250px; border-radius: 8px; border: 1px solid #ccc; object-fit: contain; background-color: #f8fafc;" />
+           </div>
+ 
+           <p id="file-name">Ninguna foto tomada aún.</p>
+ 
             <button id="btn-enviar" class="submit-btn" disabled>Subir Evidencia</button>
             <p id="status-message"></p>
             
@@ -64,14 +60,117 @@
             
             <div id="galeria-contenedor" style="display: none; margin-top: 15px; text-align: left;">
                 <h3 style="font-size: 16px; margin-bottom: 10px; color: #333;">Historial de Cargas</h3>
-                <div id="galeria-grid" class="galeria-grid"></div>
-            </div>
-
+               <div id="galeria-grid" class="galeria-grid"></div>
+           </div>
+ 
             <button id="btn-logout" class="submit-btn" style="margin-top: 25px; background-color: #dc3545;">Cerrar Sesión</button>
         </div>
 
-    </div>
+        <div id="admin-section" style="display: none;">
+            <h2>Panel Súper Admin</h2>
+            <p style="font-weight: bold; color: #333; margin-bottom: 15px;">👤 Rol: Administrador</p>
+            
+            <button id="btn-load-users" class="submit-btn" style="background-color: #17a2b8; margin-bottom: 15px;">Cargar / Actualizar Lista</button>
+            
+            <div id="admin-users-list" style="text-align: left; margin-top: 10px;">
+                </div>
 
+            <button id="btn-logout-admin" class="submit-btn" style="margin-top: 25px; background-color: #dc3545;">Cerrar Sesión</button>
+        </div>
+ 
+    </div>
+ 
+    <script src="app.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js');
+        });
+      }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Evidencias compukelc</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        
+        <div id="login-section">
+           <h2>Iniciar Sesión</h2>
+            <input type="text" id="login-doc" class="input-field" placeholder="Documento o NIT" required>
+            <input type="password" id="login-pass" class="input-field" placeholder="Contraseña" required>
+            
+            <div class="checkbox-wrapper">
+               <input type="checkbox" id="recordar-datos">
+               <label for="recordar-datos">Guardar datos de acceso</label>
+           </div>
+            
+            <button id="btn-login" class="submit-btn">Ingresar</button>
+            <p style="margin-top: 15px;">¿No tienes cuenta? <a href="#" id="link-registro" style="color: #007bff;">Regístrate aquí</a></p>
+        </div>
+ 
+        <div id="register-section" style="display: none;">
+           <h2>Registro de Contratista</h2>
+            <input type="text" id="reg-nombre" class="input-field" placeholder="Nombre Completo" required>
+            <input type="email" id="reg-correo" class="input-field" placeholder="Correo Electrónico" required>
+            <input type="text" id="reg-doc" class="input-field" placeholder="Documento de Identidad o NIT" required>
+            <input type="tel" id="reg-celular" class="input-field" placeholder="Número Celular" required>
+            <input type="password" id="reg-pass" class="input-field" placeholder="Crear Contraseña" required>
+            
+            <button id="btn-registrar" class="submit-btn" style="background-color: #28a745;">Enviar Registro</button>
+            <p style="margin-top: 15px;">¿Ya tienes cuenta? <a href="#" id="link-login" style="color: #007bff;">Inicia sesión</a></p>
+        </div>
+ 
+        <div id="app-section" style="display: none;">
+           <h2>Subir Evidencia</h2>
+            <p id="user-greeting" style="font-weight: bold; color: #333; margin-bottom: 15px;"></p>
+ 
+            <div class="camera-btn-wrapper">
+               <label for="foto" class="camera-btn">📸 Tocar para tomar foto</label>
+               <input type="file" id="foto" accept="image/*" capture="environment" style="display: none;">
+           </div>
+            
+            <div id="preview-container" style="display: none; margin-bottom: 15px;">
+               <img id="image-preview" alt="Vista previa de la evidencia" style="max-width: 100%; max-height: 250px; border-radius: 8px; border: 1px solid #ccc; object-fit: contain; background-color: #f8fafc;" />
+           </div>
+ 
+           <p id="file-name">Ninguna foto tomada aún.</p>
+ 
+            <button id="btn-enviar" class="submit-btn" disabled>Subir Evidencia</button>
+            <p id="status-message"></p>
+            
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
+            
+            <button id="btn-ver-fotos" class="submit-btn" style="background-color: #17a2b8;">Ver mis evidencias</button>
+            
+            <div id="galeria-contenedor" style="display: none; margin-top: 15px; text-align: left;">
+                <h3 style="font-size: 16px; margin-bottom: 10px; color: #333;">Historial de Cargas</h3>
+               <div id="galeria-grid" class="galeria-grid"></div>
+           </div>
+ 
+            <button id="btn-logout" class="submit-btn" style="margin-top: 25px; background-color: #dc3545;">Cerrar Sesión</button>
+        </div>
+
+        <div id="admin-section" style="display: none;">
+            <h2>Panel Súper Admin</h2>
+            <p style="font-weight: bold; color: #333; margin-bottom: 15px;">👤 Rol: Administrador</p>
+            
+            <button id="btn-load-users" class="submit-btn" style="background-color: #17a2b8; margin-bottom: 15px;">Cargar / Actualizar Lista</button>
+            
+            <div id="admin-users-list" style="text-align: left; margin-top: 10px;">
+                </div>
+
+            <button id="btn-logout-admin" class="submit-btn" style="margin-top: 25px; background-color: #dc3545;">Cerrar Sesión</button>
+        </div>
+ 
+    </div>
+ 
     <script src="app.js"></script>
     <script>
       if ('serviceWorker' in navigator) {
