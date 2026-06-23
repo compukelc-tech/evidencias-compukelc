@@ -41,15 +41,21 @@
             <p id="user-greeting" style="font-weight: bold; color: #333; margin-bottom: 15px;"></p>
 
             <div class="camera-btn-wrapper">
-                <label for="foto" class="camera-btn">📸 Tocar para tomar foto</label>
+                <label for="foto" class="camera-btn">📸 Tomar foto (Cámara)</label>
                 <input type="file" id="foto" accept="image/*" capture="environment" style="display: none;">
             </div>
+
+            <!-- Nuevo botón para la galería, oculto por defecto -->
+            <div class="camera-btn-wrapper" id="btn-galeria-wrapper" style="display: none; margin-top: 10px;">
+                <label for="foto-galeria" class="camera-btn" style="background-color: #17a2b8;">🖼️ Subir desde Galería</label>
+                <input type="file" id="foto-galeria" accept="image/*" style="display: none;">
+            </div>
             
-            <div id="preview-container" style="display: none; margin-bottom: 15px;">
+            <div id="preview-container" style="display: none; margin-bottom: 15px; margin-top: 15px;">
                 <img id="image-preview" alt="Vista previa de la evidencia" style="max-width: 100%; max-height: 250px; border-radius: 8px; border: 1px solid #ccc; object-fit: contain; background-color: #f8fafc;" />
             </div>
 
-            <p id="file-name">Ninguna foto tomada aún.</p>
+            <p id="file-name">Ningún archivo seleccionado aún.</p>
 
             <button id="btn-enviar" class="submit-btn" disabled>Subir Evidencia</button>
             <p id="status-message"></p>
@@ -61,12 +67,10 @@
             <div id="galeria-contenedor" style="display: none; margin-top: 15px; text-align: left;">
                 <h3 style="font-size: 16px; margin-bottom: 10px; color: #333;">Historial de Cargas</h3>
                 
-                <!-- Filtros Dinámicos -->
                 <div class="filtros-evidencia">
                     <div class="filtro-grupo">
                         <label for="filtro-anio">Año:</label>
                         <select id="filtro-anio" onchange="filtrarFotos()">
-                            <!-- Las opciones se inyectan dinámicamente vía JavaScript desde 2026 -->
                         </select>
                     </div>
                     <div class="filtro-grupo">
