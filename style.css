@@ -87,7 +87,7 @@ h2 {
 }
 
 .camera-btn-wrapper {
-    margin: 20px 0;
+    margin: 10px 0; /* Ajustado para múltiples botones */
 }
 
 .camera-btn {
@@ -101,10 +101,11 @@ h2 {
     width: 100%;
     text-align: center;
     font-weight: bold;
+    transition: opacity 0.3s;
 }
 
 .camera-btn:hover {
-    background-color: #5a6268;
+    opacity: 0.85;
 }
 
 #file-name {
@@ -127,7 +128,7 @@ a:hover {
     text-decoration: underline;
 }
 
-/* --- Filtros Nuevos --- */
+/* Filtros */
 .filtros-evidencia {
     display: flex;
     gap: 10px;
@@ -158,7 +159,7 @@ a:hover {
     background: white;
 }
 
-/* --- Rediseño Cuadrícula (Grid) para las fotos --- */
+/* Rediseño Cuadrícula */
 .galeria-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
