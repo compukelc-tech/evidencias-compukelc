@@ -19,7 +19,6 @@ document.getElementById('link-login').addEventListener('click', (e) => {
 
 let currentUserNombre = "";
 
-// Inicializar el filtro de año dinámico
 function inicializarFiltrosAnio() {
     const selectAnio = document.getElementById('filtro-anio');
     if (!selectAnio) return;
@@ -35,7 +34,7 @@ function inicializarFiltrosAnio() {
         option.textContent = anio;
         selectAnio.appendChild(option);
     }
-    selectAnio.value = maxAnio; // Dejar por defecto el año actual
+    selectAnio.value = maxAnio;
 }
 
 document.getElementById('btn-registrar').addEventListener('click', async () => {
@@ -91,6 +90,14 @@ async function doLogin(doc, pass, recordar) {
             loginSection.style.display = 'none';
             appSection.style.display = 'block';
             
+            // Lógica para mostrar botón de galería
+            const btnGaleria = document.getElementById('btn-galeria-wrapper');
+            if (result.rol === "admin" || result.permiso_galeria === "Sí" || result.permiso_galeria === true) {
+                btnGaleria.style.display = 'block';
+            } else {
+                btnGaleria.style.display = 'none';
+            }
+
             if (result.rol === "admin") {
                 document.getElementById('user-greeting').innerText = `👤 Admin: ${currentUserNombre}`;
                 adminSection.style.display = 'block';
@@ -142,19 +149,21 @@ document.getElementById('btn-logout').addEventListener('click', () => {
     document.getElementById('galeria-grid').innerHTML = '';
     document.getElementById('preview-container').style.display = 'none';
     document.getElementById('image-preview').src = '';
+    document.getElementById('btn-galeria-wrapper').style.display = 'none';
 });
 
+// Lógica unificada para procesar el archivo, sin importar si viene de la cámara o galería
 const fileInput = document.getElementById('foto');
+const fileInputGaleria = document.getElementById('foto-galeria');
 const fileNameDisplay = document.getElementById('file-name');
 const submitBtn = document.getElementById('btn-enviar');
 const statusMessage = document.getElementById('status-message');
 let selectedFile = null;
 
-fileInput.addEventListener('change', (event) => {
-    const file = event.target.files[0];
+function procesarArchivo(file) {
     if (file) {
         selectedFile = file;
-        fileNameDisplay.textContent = `Foto lista: ${file.name}`;
+        fileNameDisplay.textContent = `Archivo listo: ${file.name}`;
         submitBtn.disabled = false;
         
         const reader = new FileReader();
@@ -164,7 +173,10 @@ fileInput.addEventListener('change', (event) => {
         }
         reader.readAsDataURL(file);
     }
-});
+}
+
+fileInput.addEventListener('change', (event) => procesarArchivo(event.target.files[0]));
+fileInputGaleria.addEventListener('change', (event) => procesarArchivo(event.target.files[0]));
 
 submitBtn.addEventListener('click', () => {
     if (!selectedFile) return;
@@ -216,7 +228,8 @@ submitBtn.addEventListener('click', () => {
                     statusMessage.textContent = "✅ Evidencia subida exitosamente.";
                     selectedFile = null;
                     fileInput.value = "";
-                    fileNameDisplay.textContent = "Ninguna foto tomada aún.";
+                    fileInputGaleria.value = "";
+                    fileNameDisplay.textContent = "Ningún archivo seleccionado aún.";
                     
                     document.getElementById('preview-container').style.display = 'none';
                     document.getElementById('image-preview').src = '';
@@ -266,7 +279,6 @@ function cargarHistorial() {
             }
             
             data.evidencias.forEach(ev => {
-                // Parseo de fecha para extraer Año y Mes
                 let anioFoto = "";
                 let mesFoto = "";
                 let dateObj = new Date(ev.fecha);
@@ -275,7 +287,6 @@ function cargarHistorial() {
                     anioFoto = dateObj.getFullYear().toString();
                     mesFoto = (dateObj.getMonth() + 1).toString();
                 } else {
-                    // Respaldo por si el formato viene como DD/MM/YYYY
                     const partes = ev.fecha.split('/');
                     if(partes.length >= 3) {
                         anioFoto = partes[2].substring(0,4);
@@ -289,7 +300,6 @@ function cargarHistorial() {
                 
                 const card = document.createElement('div');
                 card.className = 'foto-card';
-                // Añadimos los atributos de datos para el filtrado
                 card.setAttribute('data-anio', anioFoto);
                 card.setAttribute('data-mes', mesFoto);
                 
@@ -301,7 +311,6 @@ function cargarHistorial() {
                 grid.appendChild(card);
             });
             
-            // Aplicar el filtro inmediatamente después de cargar
             filtrarFotos();
             
         } else {
@@ -313,7 +322,6 @@ function cargarHistorial() {
     });
 }
 
-// Función global de filtrado
 window.filtrarFotos = function() {
     const anioSeleccionado = document.getElementById('filtro-anio').value;
     const mesSeleccionado = document.getElementById('filtro-mes').value;
@@ -323,12 +331,11 @@ window.filtrarFotos = function() {
         const anioFoto = foto.getAttribute('data-anio');
         const mesFoto = foto.getAttribute('data-mes');
 
-        // Si por alguna razón la fecha no se pudo procesar, por seguridad la mostramos para que el contratista no piense que se borró
         const coincideAnio = (anioSeleccionado === anioFoto) || (!anioFoto);
         const coincideMes = (mesSeleccionado === 'todos' || mesSeleccionado === mesFoto) || (!mesFoto);
 
         if (coincideAnio && coincideMes) {
-            foto.style.display = 'flex'; // Utilizamos flex porque así está estructurada la foto-card
+            foto.style.display = 'flex';
         } else {
             foto.style.display = 'none';
         }
@@ -357,20 +364,29 @@ function loadAdminUsers() {
             data.usuarios.forEach(user => {
                 let statusColor = user.estado === 'Permitido' ? '#28a745' : (user.estado === 'Bloqueado' ? '#dc3545' : '#ffc107');
                 
+                // Lógica de botones para el permiso de Galería
+                let txtGaleria = user.permiso_galeria === 'Sí' ? '🚫 Quitar Galería' : '🖼️ Dar Galería';
+                let bgGaleria = user.permiso_galeria === 'Sí' ? '#6c757d' : '#17a2b8';
+
                 const card = document.createElement('div');
                 card.className = 'foto-card';
                 card.style.flexDirection = 'column';
                 card.style.alignItems = 'flex-start';
+                card.style.width = '100%';
                 
                 card.innerHTML = `
                     <div style="width: 100%; display: flex; justify-content: space-between; margin-bottom: 8px;">
                         <strong>${user.nombre}</strong>
                         <span style="color: ${statusColor}; font-size: 12px; font-weight: bold;">[${user.estado}]</span>
                     </div>
-                    <div style="font-size: 13px; color: #666; margin-bottom: 10px;">Doc: ${user.doc}</div>
-                    <div style="display: flex; gap: 5px; width: 100%;">
+                    <div style="font-size: 13px; color: #666; margin-bottom: 10px;">Doc: ${user.doc} | Galería: ${user.permiso_galeria || 'No'}</div>
+                    
+                    <div style="display: flex; gap: 5px; width: 100%; margin-bottom: 5px;">
                         <button onclick="manageUser(${user.row}, 'approve')" style="flex:1; background:#28a745; color:#fff; border:none; padding:8px; border-radius:4px; cursor:pointer; font-size: 12px; font-weight:bold;">Permitir</button>
                         <button onclick="manageUser(${user.row}, 'block')" style="flex:1; background:#ffc107; color:#000; border:none; padding:8px; border-radius:4px; cursor:pointer; font-size: 12px; font-weight:bold;">Bloquear</button>
+                    </div>
+                    <div style="display: flex; gap: 5px; width: 100%;">
+                        <button onclick="manageUser(${user.row}, 'toggle_gallery')" style="flex:1; background:${bgGaleria}; color:#fff; border:none; padding:8px; border-radius:4px; cursor:pointer; font-size: 12px; font-weight:bold;">${txtGaleria}</button>
                         <button onclick="manageUser(${user.row}, 'delete')" style="flex:1; background:#dc3545; color:#fff; border:none; padding:8px; border-radius:4px; cursor:pointer; font-size: 12px; font-weight:bold;">Borrar</button>
                     </div>
                 `;
@@ -385,9 +401,11 @@ function loadAdminUsers() {
 
 window.manageUser = function(row, actionType) {
     if (actionType === 'delete') {
-        if (!confirm("⚠️ ¿Estás seguro de eliminar este usuario por completo? Esta acción eliminará su fila en la hoja de cálculo de forma irreversible.")) return;
+        if (!confirm("⚠️ ¿Estás seguro de eliminar este usuario por completo?")) return;
     } else if (actionType === 'block') {
         if (!confirm("¿Deseas revocar el acceso a este contratista?")) return;
+    } else if (actionType === 'toggle_gallery') {
+        if (!confirm("¿Deseas cambiar el permiso de galería de este contratista?")) return;
     }
     
     fetch(SCRIPT_URL, {
