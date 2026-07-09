@@ -4,6 +4,7 @@ const loginSection = document.getElementById('login-section');
 const registerSection = document.getElementById('register-section');
 const appSection = document.getElementById('app-section');
 const adminSection = document.getElementById('admin-section');
+const ssoLoadingSection = document.getElementById('sso-loading-section'); // Nuevo contenedor inyectado
 
 document.getElementById('link-registro').addEventListener('click', (e) => {
     e.preventDefault();
@@ -128,14 +129,69 @@ document.getElementById('btn-login').addEventListener('click', () => {
     doLogin(doc, pass, recordar);
 });
 
-window.addEventListener('DOMContentLoaded', () => {
+// ---> INYECCIÓN: Lógica maestra de lectura de Token SSO <---
+window.addEventListener('DOMContentLoaded', async () => {
     inicializarFiltrosAnio();
-    const savedDoc = localStorage.getItem('compukelc_doc');
-    const savedPass = localStorage.getItem('compukelc_pass');
-    if (savedDoc && savedPass) {
-        doLogin(savedDoc, savedPass, true);
+    
+    // 1. Revisar si hay un token en la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+
+    if (token) {
+        // Ocultar login normal y mostrar pantalla de validación
+        loginSection.style.display = 'none';
+        if (ssoLoadingSection) ssoLoadingSection.style.display = 'block';
+
+        try {
+            // Ir al Apps Script a validar el token
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'validarTokenMaestro', token: token })
+            });
+            const result = await response.json();
+
+            if (result.status === "success" && result.data && result.data.valido) {
+                // Token válido: Otorgar acceso
+                currentUserNombre = result.data.username;
+                
+                if (ssoLoadingSection) ssoLoadingSection.style.display = 'none';
+                appSection.style.display = 'block';
+
+                const btnGaleria = document.getElementById('btn-galeria-wrapper');
+                // Si el rol que viene del panel central es SuperAdmin o Master, darle privilegios
+                if (result.data.rol === "SuperAdmin" || result.data.rol === "Master") {
+                    btnGaleria.style.display = 'block';
+                    document.getElementById('user-greeting').innerText = `👑 ${result.data.rol}: ${currentUserNombre}`;
+                    adminSection.style.display = 'block';
+                    loadAdminUsers();
+                } else {
+                    btnGaleria.style.display = 'none';
+                    document.getElementById('user-greeting').innerText = `👤 Usuario SSO: ${currentUserNombre}`;
+                    adminSection.style.display = 'none';
+                }
+
+                // Limpiar la URL por seguridad (quita el ?token=... de la barra de direcciones)
+                window.history.replaceState({}, document.title, window.location.pathname);
+
+            } else {
+                throw new Error("Token inválido o expirado");
+            }
+        } catch (error) {
+            console.error("SSO Error:", error);
+            if (ssoLoadingSection) ssoLoadingSection.style.display = 'none';
+            loginSection.style.display = 'block';
+        }
+
+    } else {
+        // 2. Si no hay token, intentar con datos locales como siempre
+        const savedDoc = localStorage.getItem('compukelc_doc');
+        const savedPass = localStorage.getItem('compukelc_pass');
+        if (savedDoc && savedPass) {
+            doLogin(savedDoc, savedPass, true);
+        }
     }
 });
+// ---> FIN DE INYECCIÓN <---
 
 document.getElementById('btn-logout').addEventListener('click', () => {
     localStorage.removeItem('compukelc_doc');
